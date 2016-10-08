@@ -1,0 +1,16 @@
+.text-align-center {
+	text-align: center;
+}
+
+.messages{
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	width: 300px;
+	z-index: 10;
+}
+
+.og-price{
+	color:red;
+	text-decoration:line-through;
+}

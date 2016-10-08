@@ -1,0 +1,15 @@
+1. Products.    ( Physical Products )
+    --- Single Product (Detail VIew).
+        -- SOcia; Sharing Buttons.
+    --- List Product (List View).
+    --- Inventory Control + Viewable.
+    --- Search Products.
+
+2. Checkouts.
+    --- Carts (shopping carts).
+    --- Auth Users & Guest Users (non-auth)
+    --- Shipping & Billing Address
+
+3. Payments.
+    --- Integration with brain tree (steps on other integrations).
+
