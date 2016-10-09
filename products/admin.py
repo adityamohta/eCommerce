@@ -3,6 +3,11 @@ from django.contrib import admin
 from products.models import Product, ProductImage, Variation, Category, ProductFeatured
 
 
+class ProductFeaturedInLine(admin.TabularInline):
+    model = ProductFeatured
+    extra = 0
+
+
 class ProductImageInLine(admin.TabularInline):
     model = ProductImage
     extra = 0
@@ -21,6 +26,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [
         VariationInLine,
         ProductImageInLine,
+        ProductFeaturedInLine
     ]
 
     class Meta:
@@ -29,5 +35,5 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 # admin.site.register(ProductImage)
-admin.site.register(ProductFeatured)
+# admin.site.register(ProductFeatured)
 # admin.site.register(Variation)

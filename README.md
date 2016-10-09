@@ -1,2 +1,2 @@
 # eCommerce
-An open source eCommerce build with Django.
+An open source eCommerce Website build with Django.

@@ -5,6 +5,8 @@ from django.contrib import admin
 
 from newsletter.views import contact, home
 from ecommerce.views import about
+from carts.views import CartView
+
 
 urlpatterns = [
     # Examples:
@@ -17,6 +19,8 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^categories/', include('products.urls_categories', namespace='categories')),
+
+    url(r'^cart/$', CartView.as_view(), name='cart'),
 ]
 
 if settings.DEBUG:
