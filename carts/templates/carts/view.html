@@ -1,17 +1,68 @@
 {% extends "base.html" %}
 
+<script>
+
+    {% block jquery %}
+    $(".item-qty").change(function(){
+        //$(this).next(".btn-update").fadeIn();
+        //event.preventDefault();
+        var item = $(this).prev("input[type='hidden']").val();
+        var qty = $(this).val();
+        var data = {
+            "item": item,
+            "qty": qty
+        };
+        console.log(data);
+        $.ajax({
+            type: "GET", //"POST"
+            url: "{% url 'cart' %}",
+            data: data,
+            success: function(data){
+                $("#jquery-message").text("Added " + data.item_added + " Deleted " + data.deleted);
+                if(data.deleted){
+                    $("#item-"+item).fadeOut();
+                }else{
+                    $("#item-line-total-"+item).text(data.line_total);
+                    $("#subtotal").text(data.subtotal);
+                }
+                showFlashMessage(data.flash_message, data.message_type);
+            },
+            error: function(response, error){
+                // console.log(response);
+                // console.log(error);
+            }
+        });
+        // $("#add-form").submit();
+    });
+
+
+
+    {% endblock jquery %}
+
+</script>
+
 
 {% block content %}
     <table class="table">
     {% for item in object.cartitem_set.all %}
-
-        <tr>
+        <tr id="item-{{ item.item.id }}">
             <td>{{ item.item.get_title }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.line_total }}</td>
-            <td class="text-right"><a href="{{ item.remove }}">x</a></td>
+            <td>
+                <form action="." method="GET">
+                    <input type="hidden" name="item" value="{{ item.item.id }}" />
+                    <input type="number" class="item-qty" name="qty" value="{{ item.quantity }}" />
+                    <input type="submit" class="btn-update btn btn-link" value="Update Item" style="display: none;"/>
+                </form>
+            </td>
+            <td id="item-line-total-{{ item.item.id }}">{{ item.line_item_total }}</td>
+            <td class="text-right">
+                <a href="{{ item.remove }}">x</a>
+            </td>
         </tr>
         <br/>
     {% endfor %}
+        <tr>
+            <td id="subtotal" colspan="4" class="text-right">Subtotal: {{ object.subtotal }}</td>
+        </tr>
     </table>
 {% endblock content %}
