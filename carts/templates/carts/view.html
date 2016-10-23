@@ -23,8 +23,17 @@
                     $("#item-"+item).fadeOut();
                 }else{
                     $("#item-line-total-"+item).text(data.line_total);
-                    $("#subtotal").text(data.subtotal);
                 }
+                $("#subtotal").text(data.subtotal);
+                $("#tax_total").text(data.tax_total);
+                $("#total").text(data.total);
+                console.log(data);
+                if(data.total_items == 0){
+                    $(".table").fadeOut();
+                    var template = "{% include 'carts/empty_cart.html' %}";
+                    $(".main-content").html(template);
+                }
+                updateCartItemCount();
                 showFlashMessage(data.flash_message, data.message_type);
             },
             error: function(response, error){
@@ -43,26 +52,40 @@
 
 
 {% block content %}
-    <table class="table">
-    {% for item in object.cartitem_set.all %}
-        <tr id="item-{{ item.item.id }}">
-            <td>{{ item.item.get_title }}</td>
-            <td>
-                <form action="." method="GET">
-                    <input type="hidden" name="item" value="{{ item.item.id }}" />
-                    <input type="number" class="item-qty" name="qty" value="{{ item.quantity }}" />
-                    <input type="submit" class="btn-update btn btn-link" value="Update Item" style="display: none;"/>
-                </form>
-            </td>
-            <td id="item-line-total-{{ item.item.id }}">{{ item.line_item_total }}</td>
-            <td class="text-right">
-                <a href="{{ item.remove }}">x</a>
-            </td>
-        </tr>
-        <br/>
-    {% endfor %}
-        <tr>
-            <td id="subtotal" colspan="4" class="text-right">Subtotal: {{ object.subtotal }}</td>
-        </tr>
-    </table>
+
+    <div class="row main-content">
+        {% if object.cartitem_set.count < 1 %}
+            {% include 'carts/empty_cart.html' %}
+        {% else %}
+            <table class="table">
+                {% for item in object.cartitem_set.all %}
+                    <tr id="item-{{ item.item.id }}">
+                        <td>{{ item.item.get_title }}</td>
+                        <td>
+                            <form action="." method="GET">
+                                <input type="hidden" name="item" value="{{ item.item.id }}" />
+                                <input type="number" class="item-qty" name="qty" value="{{ item.quantity }}" />
+                                <input type="submit" class="btn-update btn btn-link" value="Update Item" style="display: none;"/>
+                            </form>
+                        </td>
+                        <td id="item-line-total-{{ item.item.id }}">{{ item.line_item_total }}</td>
+                        <td class="text-right">
+                            <a href="{{ item.remove }}">x</a>
+                        </td>
+                    </tr>
+                    <br/>
+                {% endfor %}
+                <tr>
+                    <td colspan="4" class="text-right">Subtotal : <span id="subtotal">{{ object.subtotal }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right">Tax(estimated) : <span id="tax_total">{{ object.tax_total }}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right">Total : <span id="total">{{ object.total }}</span></td>
+                </tr>
+            </table>
+
+        {% endif %}
+    </div>
 {% endblock content %}

@@ -29,6 +29,7 @@
                 data: formData,
                 success: function(data){
                     showFlashMessage(data.flash_message, data.message_type);
+                    updateCartItemCount();
                 },
                 error: function(response, error){
                     // console.log(response);

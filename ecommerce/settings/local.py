@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'registration',
     # my apps
     'carts',
+    'orders',
     'newsletter',
     'products.apps.ProductsConfig',
 )

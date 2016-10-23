@@ -23,6 +23,7 @@ class CartItem(models.Model):
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
     qty = instance.quantity
+    # print("hello")
     if qty >= 1:
         price = instance.item.get_price()
         line_item_total = Decimal(qty) * Decimal(price)
@@ -45,7 +46,12 @@ class Cart(models.Model):
     items = models.ManyToManyField(Variation, through=CartItem)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-    subtotal = models.DecimalField(max_digits=50, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+    tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+    tax_percentage = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
+    total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+    # discounts
+    # shipping
 
     def __str__(self):
         return str(self.id)
@@ -57,6 +63,15 @@ class Cart(models.Model):
             subtotal += item.line_item_total
         self.subtotal = subtotal
         self.save()
-    # taxes total
-    # discounts
-    # total price
+
+
+def do_tax_and_total_receiver(sender, instance, *args, **kwargs):
+    subtotal = instance.subtotal
+    tax_percentage = instance.tax_percentage
+    tax_total = round(Decimal(subtotal) * Decimal(tax_percentage), 2)    # 8.5%
+    total = round(Decimal(subtotal) + tax_total, 2)
+    instance.tax_total = tax_total
+    instance.total = total
+
+
+pre_save.connect(do_tax_and_total_receiver, sender=Cart)
