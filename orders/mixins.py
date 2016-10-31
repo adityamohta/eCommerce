@@ -23,7 +23,11 @@ class CartOrderMixin(object):
             new_order = Order.objects.create(cart=cart)
             self.request.session["order_id"] = new_order.id
         else:
-            new_order = Order.objects.get(id=new_order_id)
+            try:
+                new_order = Order.objects.get(id=new_order_id)
+            except:
+                new_order = Order.objects.create(cart=cart)
+                self.request.session["order_id"] = new_order.id
         return new_order
 
     def get_cart(self, *args, **kwargs):

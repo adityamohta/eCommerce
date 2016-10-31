@@ -14,11 +14,12 @@
 .jumbotron {
 	background-color:#5ACDFF;
 	color: #000;
+    text-shadow: 2px 2px 8px #333333;
     {% if featured_image.make_image_background %}
         background-image: url("{{ featured_image.image.url }}");
         background-repeat: no-repeat;
         background-color: black;
-        background-size: cover;
+        background-size: 100% 100%;
 
         {% if featured_image.text_css_color %}
             color: #{{ featured_image.text_css_color }}
@@ -30,7 +31,6 @@
 </style>
 
 
-     
 {% block jumbotron %}
     {% if featured_image %}
         <div class="jumbotron">

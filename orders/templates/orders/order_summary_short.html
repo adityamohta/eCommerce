@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+        <p class="lead text-center">Order Summary</p>
+        <table class="table">
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+            </tr>
+            {% for item in order.cart.cartitem_set.all %}
+                <tr>
+                    <td>{{ item.item.get_title }} - {{ item.quantity }}</td>
+                    <td>{{ item.line_item_total }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Cart Subtotal</td>
+                <td>{{ order.cart.subtotal }}</td>
+            </tr>
+            <tr>
+                <td>Tax</td>
+                <td>{{ order.cart.tax_total }}</td>
+            </tr>
+            <tr>
+                <td>Items Total</td>
+                <td>{{ order.cart.total }}</td>
+            </tr>
+            <tr>
+                <td>Shipping</td>
+                <td>{{ order.shipping_total_price }}</td>
+            </tr>
+            <tr>
+                <td>Order Total</td>
+                <td>{{ order.order_total }}</td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4 text-center">
+        <p class="lead">Address <a href="{% url 'order_address' %}"><i class="fa fa-pencil"></i></a></p>
+        <p>
+            <b>Billing to:</b><br/>
+            {{ order.billing_address.get_address }}
+        </p>
+        <p>
+            <b>Shipping to:</b><br/>
+            {{ order.shipping_address.get_address }}
+        </p>
+
+    </div>
+</div>

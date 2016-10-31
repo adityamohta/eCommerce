@@ -1,9 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 text-center">
+            <h1>Your orders</h1>
+            <table class="table">
+                {% for object in object_list %}
+                    <tr>
+                        <td colspan="2">
+                            <a class="btn btn-default btn-block" href="{{ object.get_absolute_url }}">Order ID - #{{ object.id }}</a><br>
+                        </td>
+                        <td>
+                            {% for item in object.cart.items.all %}
+                            {{ item.get_title }}<br>
+                            {% endfor %}
+                        </td>
+                        <td>{{ object.cart.items.count }} item(s)</td>
+                    </tr>
+                {% empty %}
+                    <br>
+                    <p class="lead">Your do not have any orders yet.</p>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 
-    {% for object in object_list %}
-        <li>{{ object.cart.items.all }}</li>
-    {% endfor %}
+
 
 {% endblock content %}

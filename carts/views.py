@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, JsonResponse
@@ -18,7 +19,14 @@ class ItemCountView(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             cart_id = request.session.get("cart_id")
-            if cart_id is None:
+            if request.user.is_authenticated():
+                cart = Cart.objects.filter(user=request.user)
+                if cart.count() >= 1:
+                    cart = cart.first()
+                    count = cart.cartitem_set.count()
+                else:
+                    count = 0
+            elif cart_id is None:
                 count = 0
             else:
                 cart = Cart.objects.get(id=cart_id)
@@ -36,14 +44,27 @@ class CartView(SingleObjectMixin, View):
     def get_object(self, *args, **kwargs):
         self.request.session.set_expiry(0)
         cart_id = self.request.session.get("cart_id")
-        if cart_id is None:
+        if cart_id is not None:
+            cart = Cart.objects.get(id=cart_id)
+            if self.request.user.is_authenticated():
+                cart.user = self.request.user
+                cart.save()
+            return cart
+
+        if not self.request.user.is_authenticated():
             cart = Cart(subtotal=0.00)
             cart.save()
             cart_id = cart.id
             self.request.session["cart_id"] = cart_id
-        cart = Cart.objects.get(id=cart_id)
-        if self.request.user.is_authenticated():
-            cart.user = self.request.user
+        else:
+            cart = Cart.objects.filter(user=self.request.user)
+            if cart.count() >= 1:
+                cart = cart.first()
+            else:
+                cart = Cart(subtotal=0.00, user=self.request.user)
+                cart.save()
+            cart_id = cart.id
+            self.request.session["cart_id"] = cart_id
             cart.save()
         return cart
 
@@ -208,11 +229,14 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 class CheckoutFinalView(CartOrderMixin, View):
     def post(self, request, *args, **kwargs):
         order = self.get_order()
+        if order is None:
+            return redirect("cart")
         if request.POST.get("payment_token") == "abcd":
             order.mark_completed()
+            messages.success(request, "Thank you for your order. :)")
             del request.session["cart_id"]
             del request.session["order_id"]
-        return redirect("checkout")
+        return redirect("order_detail", pk=order.pk)
 
     def get(self, request, *args, **kwargs):
 

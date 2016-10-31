@@ -14,7 +14,12 @@
         <form method="POST" action="">{% csrf_token %}
             <div class="col-sm-8 col-sm-offset-2">
                 {{ form|crispy }}
-                <input type="submit" class="btn btn-default" value="Add" />
+                {% if 'address/add/' in request.build_absolute_uri %}
+                    <input type="submit" class="btn btn-default btn-block" value="Add Address" />
+                {% else %}
+                    <input type="submit" class="btn btn-default btn-block" value="Select" />
+                    <a href="{% url 'user_address_create' %}" class="btn btn-default btn-block">Add New Address</a>
+                {% endif %}
             </div>
         </form>
     </div>

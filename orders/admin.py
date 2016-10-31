@@ -12,8 +12,8 @@ class UserAddressModelAdmin(admin.ModelAdmin):
 
 
 class OrderModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'billing_address', 'shipping_address', 'shipping_total_price', 'order_total', 'status']
-    list_display_links = ['id', 'billing_address']
+    list_display = ['id', 'user', 'shipping_total_price', 'order_total', 'status']
+    list_display_links = ['id', 'user']
 
     class Meta:
         model = Order
