@@ -9,11 +9,11 @@ from .models import SignUp
 
 # Create your views here.
 def home(request):
-    title = 'Sign Up Now'
+    title = 'Home'
 
     featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
-    products = Product.objects.all().order_by("?")[:6]
-    products2 = Product.objects.all().order_by("?")[:6]
+    products = Product.objects.all().order_by("?")[:6]  # recommended products.
+    products2 = Product.objects.all().order_by("?")[:6]     # featured products.
 
     form = SignUpForm(request.POST or None)
     context = {

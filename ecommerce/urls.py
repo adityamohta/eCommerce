@@ -5,8 +5,8 @@ from django.contrib import admin
 
 from newsletter.views import contact, home
 from ecommerce.views import about
-from carts.views import CartView, ItemCountView, CheckoutView
-from orders.views import AddressSelectFormView
+from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
+from orders.views import AddressSelectFormView, UserAddressCreateView, OrderList
 
 urlpatterns = [
     # Examples:
@@ -20,10 +20,13 @@ urlpatterns = [
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^categories/', include('products.urls_categories', namespace='categories')),
 
+    url(r'^orders/$', OrderList.as_view(), name='orders'),
     url(r'^cart/$', CartView.as_view(), name='cart'),
     url(r'^cart/count$', ItemCountView.as_view(), name='item_count'),
     url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),
     url(r'^checkout/address/$', AddressSelectFormView.as_view(), name='order_address'),
+    url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
+    url(r'^checkout/final/$', CheckoutFinalView.as_view(), name='checkout_final'),
 ]
 
 if settings.DEBUG:

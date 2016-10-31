@@ -1,13 +1,17 @@
 {% if messages %}
 <div class="messages">
     {% for message in messages %}
-    <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
-        {% if "html_safe" in message.tags %}
-        {{ message|safe }}
-        {% else %}
-        {{ message }}
-        {% endif %}.
-    </div>
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {% if "html_safe" in message.tags %}
+                    {{ message|safe }}
+                {% else %}
+                    {{ message }}
+                {% endif %}.
+            </div>
+{#            <strong>Success!</strong> This alert box could indicate a successful or positive action.#}
+        </div>
     {% endfor %}
 </div>
 {% endif %}
